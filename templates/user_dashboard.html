@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}My Bookings - GIHUT Travels{% endblock %}
+
+{% block content %}
+<style>
+    .booking-table { width: 100%; border-collapse: collapse; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+    .booking-table th { background: #1abc9c; color: white; padding: 15px; text-align: left; }
+    .booking-table td { padding: 15px; border-bottom: 1px solid #eee; color: #333; vertical-align: middle; }
+    
+    /* Status Badge Style */
+    .status-badge { 
+        padding: 6px 14px; 
+        border-radius: 20px; 
+        font-size: 12px; 
+        font-weight: bold; 
+        text-transform: uppercase; 
+        display: inline-block; 
+        min-width: 90px; 
+        text-align: center; 
+    }
+    
+    /* အရောင်သတ်မှတ်ချက်များ */
+    .status-pending { background: #fff3cd; color: #856404; }
+    .status-confirmed { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+</style>
+
+<div class="container" style="padding: 40px;">
+    <h2 style="margin-bottom: 25px;">ကျွန်ုပ်၏ Booking အခြေအနေများ</h2>
+    <table class="booking-table">
+        <thead>
+            <tr>
+                <th>Booking ID</th>
+                <th>Package Name</th>
+                <th>Travel Date</th>
+                <th>Guests</th>
+                <th>Price</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for b in bookings %}
+            <tr>
+                <td>#{{ b.id }}</td>
+                <td><strong>{{ b.package_name }}</strong></td>
+                <td>{{ b.travel_date }}</td>
+                <td>{{ b.guests }} Person(s)</td>
+               <td>{{ "{:,}".format(b.total_price) }} MMK</td>
+                
+              <td class="status">
+    {% if b.status == 'confirmed' %}
+        <span style="color: green; font-weight: bold;">Confirmed ✅</span>
+        <!-- <br>
+        <a href="/tour_details/{{ b.tour_id }}#review-section" style="font-size: 12px;">Rate Now</a>
+         -->
+    {% elif b.status == 'cancelled' %}
+        <span style="color: red; font-weight: bold;">Cancelled ❌</span>
+        
+    {% else %}
+        <span style="color: orange;">Pending...</span>
+    {% endif %}
+</td>
+
+                <td>
+                    {% if b.status and b.status|lower|trim == 'confirmed' %}
+                        <button type="button" 
+                                style="background:#f1c40f; color:white; padding:8px 15px; font-size:12px; border:none; border-radius:5px; cursor:pointer; font-weight:bold;"
+                                onclick="openReviewModal('{{ b.tour_id }}', '{{ b.package_name }}')">
+                            Review
+                        </button>
+                    {% else %}
+                        <small style="color: #999;">Waiting for confirm</small>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" style="text-align: center; padding: 30px; color: #999;">Booking မှတ်တမ်း မရှိသေးပါ။</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="reviewModal" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6);">
+    <div style="background:white; width:400px; margin:10% auto; padding:30px; border-radius:15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+        <h3 style="margin-top:0;">Review for <br><span id="reviewTourName" style="color:#1abc9c;"></span></h3>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+        <form id="reviewForm" method="POST">
+            <label style="font-weight: bold; display: block; margin-bottom: 8px;">Your Comment:</label>
+            <textarea name="comment" required placeholder="ခရီးစဉ်အတွေ့အကြုံကို ရေးပေးပါ..." style="width:100%; height:100px; padding:12px; border-radius:8px; border:1px solid #ddd; margin-bottom: 20px; resize: none; box-sizing: border-box;"></textarea>
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="flex: 2; background: #1abc9c; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;">Submit Review</button>
+                <button type="button" onclick="closeReviewModal()" style="flex: 1; background:#bdc3c7; border:none; padding:10px; border-radius:5px; cursor:pointer;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function openReviewModal(tourId, tourName) {
+    // action လိပ်စာကို သေချာတည်ဆောက်ပါ
+    document.getElementById('reviewForm').action = "/submit_review/" + tourId;
+    document.getElementById('reviewTourName').innerText = tourName;
+    document.getElementById('reviewModal').style.display = 'block';
+}
+function closeReviewModal() {
+    document.getElementById('reviewModal').style.display = 'none';
+}
+</script>
+{% endblock %}

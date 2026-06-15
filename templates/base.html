@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ title or "Myanmar Trip Planner" }}</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800;900&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .footer-trust {
+            display: flex; gap:15px; align-items:center; justify-content:center; margin-top:13px; font-size:.97rem; color:#778;
+            flex-wrap: wrap;
+        }
+        .footer-trust img {
+            height:22px;width:auto;vertical-align:middle;margin-right:7px;
+        }
+        .footer-links { display:flex; gap:22px; justify-content:center; margin-top:9px;}
+        .footer {background:#f7faff;margin-top:54px;padding:32px 0 6px 0;font-size:.97rem;color:#456;text-align:center;}
+        .footer .footer-social a{margin:0 6px;color:#ff5741;}
+        .footer .footer-social {margin-bottom:10px;}
+        @media(max-width:650px){.footer{font-size:.92rem;}}
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="navbar-brand">
+        <span class="navbar-logo"><i class="fa-solid fa-location-dot"></i></span>
+        <span style="font-weight:900;color:#2d386b;">Au<span style="color:#37be82;">ra</span> Journeys</span>
+    </div>
+    <div class="nav-middle">
+        <div class="nav-links">
+            <a href="/" class="{% if request.path == '/' %}active{% endif %}">Home</a>
+            <a href="/search_tours" class="{% if '/search' in request.path %}active{% endif %}">Search Tours</a>
+            <a href="/#why2">Why Choose Us</a>
+            <!-- <a href="/admin/hotels" class="{% if '/admin/hotels' in request.path %}active{% endif %}">Hotels</a> -->
+        </div>
+        <form method="GET" action="/search" style="display:inline;">
+            <input class="nav-searchbar" name="q" placeholder="&#128269;  Where to? eg. Mandalay">
+        </form>
+    </div>
+ <div class="nav-action">
+    {% if session.get("user_id") %}
+        <div style="position: relative; display: inline-block;">
+            <span onclick="toggleProfileMenu()" style="margin-right: 15px; font-weight: 600; color: #2d386b; cursor: pointer; user-select: none;">
+                <i class="fa-solid fa-circle-user"></i> {{ session.get("username") }} <i class="fa-solid fa-chevron-down" style="font-size: 10px;"></i>
+            </span>
+
+            <div id="profileBox" style="display: none; position: absolute; right: 0; top: 40px; width: 250px; background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); z-index: 1000; padding: 20px; border: 1px solid #eee;">
+                <div style="text-align: center; margin-bottom: 15px;">
+                    <i class="fa-solid fa-circle-user" style="font-size: 40px; color: #37be82;"></i>
+                    <div style="font-weight: 800; color: #2d386b; margin-top: 5px;">{{ session.get("username") }}</div>
+                    <div style="font-size: 11px; color: #888; text-transform: uppercase;">{{ session.get("role") }} Account</div>
+                </div>
+
+                <hr style="border: 0; border-top: 1px solid #eee; margin: 15px 0;">
+
+                <form action="/change_password" method="POST">
+                    <label style="font-size: 12px; font-weight: 600; color: #555;">Change Password</label>
+                    <input type="password" name="new_password" required placeholder="New password" 
+                           style="width: 100%; padding: 10px; margin-top: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px; box-sizing: border-box;">
+                    <button type="submit" style="width: 100%; background: #37be82; color: white; border: none; padding: 10px; margin-top: 10px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: 0.3s;">
+                        Update Password
+                    </button>
+                </form>
+
+                <div style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;">
+                    {% if session.get("role") == "admin" %}
+                        <a href="/admin_dashboard" style="text-decoration: none; color: #2d386b; font-size: 14px; padding: 8px; border-radius: 6px; background: #f0f4f8; text-align: center;">
+                            <i class="fa-solid fa-gauge"></i> Admin Dashboard
+                        </a>
+                    {% endif %}
+                    <a href="/dashboard" style="text-decoration: none; color: #2d386b; font-size: 14px; padding: 8px; border-radius: 6px; background: #f0f4f8; text-align: center;">
+                        <i class="fa-solid fa-table-list"></i> My Bookings
+                    </a>
+                    <a href="/logout" style="text-decoration: none; color: #ff5741; font-size: 14px; padding: 8px; border-radius: 6px; background: #ffeae2; text-align: center; font-weight: 600;">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <a href="/login" class="btn-login">Log in</a>
+        <a href="/register" class="btn-signup">Sign up</a>
+    {% endif %}
+</div>
+</nav>
+
+{% block hero %}{% endblock %}
+<div style="max-width:1340px;margin:auto;">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{category}}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+</div>
+
+
+<!-- Floating Live Chat / WhatsApp Button -->
+<!-- <a href="https://wa.me/95912345678" class="float-contact" title="WhatsApp us" style="position:fixed;bottom:28px;right:29px;background:#25D366;border-radius:50%;height:54px;width:54px;display:flex;align-items:center;justify-content:center;z-index:88; box-shadow:0 2px 18px -4px #25D36699;">
+    <i class="fab fa-whatsapp" style="font-size:2rem;color:#fff;"></i>
+</a> -->
+
+<!-- FOOTER with trust badges and links -->
+<footer class="footer">
+    <div class="footer-social">
+        <a href="https://facebook.com" target="_blank" title="Facebook"><i class="fab fa-facebook-square fa-lg"></i></a>
+        <a href="https://instagram.com" target="_blank" title="Instagram"><i class="fab fa-instagram fa-lg"></i></a>
+        <a href="https://youtube.com" target="_blank" title="YouTube"><i class="fab fa-youtube fa-lg"></i></a>
+    </div>
+    <div class="footer-links">
+        <a href="/#why2">Why Choose Us</a>
+        <!-- <a href="/faq">FAQ</a>
+        <a href="/privacy-policy">Privacy</a>
+        <a href="/terms">Terms</a> -->
+        <a href="/#why2">Contact</a>
+    </div>
+    <div class="footer-trust">
+         100% Secure 
+        <!-- <img src="https://img.icons8.com/color/48/visa.png" alt="Visa" title="Visa">
+        <img src="https://img.icons8.com/color/48/mastercard-logo.png" alt="Mastercard" title="Mastercard">
+        <img src="https://img.icons8.com/color/48/paypal.png" alt="Paypal" title="Paypal"> -->
+        <span style="margin-left:8px;color:#3ac883;"><i class="fa-solid fa-certificate"></i> Travel Agency License #2026-011</span>
+    </div>
+    <div style="color:#a8b2c0; font-size:0.98rem; margin-top:9px;">
+        © 2026 Aura Journeys  • Powered by Myanmar
+    </div>
+</footer>
+<script>
+function toggleProfileMenu() {
+    const box = document.getElementById("profileBox");
+    if (box.style.display === "none" || box.style.display === "") {
+        box.style.display = "block";
+    } else {
+        box.style.display = "none";
+    }
+}
+
+// Box ရဲ့ အပြင်ဘက်ကို နှိပ်ရင် auto ပြန်ပိတ်သွားအောင် လုပ်ပေးခြင်း
+window.onclick = function(event) {
+    const box = document.getElementById("profileBox");
+    const userTrigger = document.querySelector('.nav-action span');
+    
+    if (box && box.style.display === "block") {
+        if (!box.contains(event.target) && !userTrigger.contains(event.target)) {
+            box.style.display = "none";
+        }
+    }
+}
+</script>
+</body>
+</html>

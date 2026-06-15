@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block hero %}
+<!-- HERO SECTION (with search bar & background map) -->
+<div class="hero-main" style="background:linear-gradient(97deg,#fafdff 80%,#f3feff);padding-bottom:22px;">
+    <div class="hero-intro">
+        <div class="hero-title" style="font-size:2.5rem;">
+            “Myanmar Trip Planner”
+        </div>
+        <div class="hero-desc">
+            Turn your dream trip into <b class="u-highlight">trusted reality</b>.<br>
+            <span style="color:#37be82;font-weight:700;">explore guides,</span> and compare prices in one place.<br>
+        </div>
+<form action="{{ url_for('search') }}" method="GET">
+    <div class="search-box">
+        <input type="text" name="q" placeholder="Where to? (e.g. Bagan)" required>
+        <button type="submit" style="display:none;">Search</button> </div>
+</form>
+
+<!-- Why Choose Gihut Section -->
+<section id="why-gihut">
+    <h2>Why Choose Aura Journeys?</h2>
+    <p>
+        We provide trusted tour packages, professional guides, affordable prices,
+        and unforgettable travel experiences for our customers.
+    </p>
+</section>
+        </form>
+        <div style="color:#97acc9;font-size:.99rem;">
+            <i class="fa fa-check-circle" style="color:#37be82;"></i>
+            <b>No booking fee.</b> 100% Myanmar-based support.
+        </div>
+    </div>
+    <img src="{{ url_for('static',filename='images/hero-map.png') }}"
+         class="hero-img"
+         alt="Myanmar Map illustration" loading="lazy"
+         style="box-shadow:0 4px 32px -14px #37be8222;">
+</div>
+{% endblock %}
+
+{% block content %}
+<!-- Trending Destinations -->
+<h2 class="section-heading">Top destinations in Myanmar</h2>
+<div class="destinations-grid" style="margin-bottom:21px;">
+    {% for city in cities %}
+    <div class="destination-card">
+        <img src="{{ url_for('static', filename='images/' + (city.img or 'default-mm.jpg')) }}" alt="{{ city.name }}" class="destination-img" style="height:170px;">
+        <div style="padding:0 15px;">
+            <div class="destination-card-title">{{ loop.index }}. {{ city.name }} <a class="ext-link" href="/city/{{ city.id | default(loop.index) }}"></a></div>
+            {% if city.popular %}
+                <div class="dest-popularity">{{ city.popular }}</div>
+            {% endif %}
+            <div class="destination-card-desc">{{ city.description }}</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<!-- Why Choose Us section -->
+           <!-- <a href="#why"></a> -->
+
+   
+
+<div class="why-choose-section" style="margin:40px 0 25px 0;" id="why2">
+    <h2 class="section-heading" >Why Choose Aura Journeys<span style="color:#ff5741;">?</span></h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:34px;text-align:center;">
+        <div>
+   <section id="why">
+            <i class="fa-solid fa-headset" style="font-size:2.0rem;color:#37be82;"></i>
+            <div class="why-title">24/7 Support</div>
+            <div class="why-desc">ခရီးသွားချင်စိတ်ကို ချက်ချင်းဖြစ်ပေါ်စေမည့် အဆင့်မြင့်ပုံရိပ်များနှင့် ဆွဲဆောင်မှုရှိသော Layout များဖြင့် လုပ်ငန်း၏ ပုံရိပ်ကို ဖော်ဆောင်ပေးခြင်း။</div>
+        </div>
+        <div>
+            <i class="fa-solid fa-tags" style="font-size:2.0rem;color:#ffae00;"></i>
+            <div class="why-title">Best Price Guarantee</div>
+            <div class="why-desc">မည်သည့် Device ဖြင့်မဆို ချောမွေ့မြန်ဆန်စွာ အသုံးပြုနိုင်ရန် စီမံထားသဖြင့် သုံးစွဲသူများအတွက် အဆင်ပြေဆုံး အတွေ့အကြုံကို ပေးစွမ်းနိုင်ခြင်း။</div>
+        </div>
+        <div>
+            <i class="fa-solid fa-shield-halved" style="font-size:2.0rem;color:#253891;"></i>
+            <div class="why-title">Trust & Flexibility</div>
+            <div class="why-desc">ကြည့်ကောင်းရုံသက်သက်မဟုတ်ဘဲ လုပ်ငန်း၏ ရည်မှန်းချက်နှင့် အရောင်းအဝယ်ကဏ္ဍကို တကယ်တိုးတက်စေမည့် လုပ်ဆောင်ချက်များကို ဦးစားပေးထားခြင်း။</div>
+        </div>
+        <div>
+            <i class="fa-solid fa-credit-card" style="font-size:2.0rem;color:#3247a8;"></i>
+            <div class="why-title"></div>
+            <div class="why-desc">ခရီးစဉ်များကို အွန်လိုင်းတွင် ရှာဖွေသူတိုင်း လွယ်လင့်တကူ တွေ့ရှိနိုင်စေရန် ခေတ်မီ SEO နည်းပညာများဖြင့် အကောင်းဆုံး ပံ့ပိုးပေးခြင်း။</div>
+        </div>
+    </div>
+</div>
+</section>
+
+<!-- Testimonials -->
+<div class="testimonial-section" style="margin:44px 0;">
+    <h2 class="section-heading"><a href="">What Our Travellers Say</a></h2>
+    <div class="testimonial-slider" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px;margin:21px 0;">
+        <div class="testimonial-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 25px -11px #d1e5efaa;padding:19px 20px;display:flex;gap:14px;align-items:center;">
+            <img src="{{ url_for('static', filename='images/t1.jpg') }}" alt="testimonial 1" style="height:58px;width:58px;object-fit:cover;border-radius:18px;border:3px solid #e0efff;box-shadow:0 1px 8px -3px #aad2e5;">
+            <div style="flex:1;">
+              <div style="font-weight:700;color:#263365;font-size:1rem;">"Booking package with Aura was super easy and trustworthy."</div>
+              <div class="review-author" style="font-size:.96rem;margin-top:4px;"><i class="fa fa-user-circle"></i> Aye Myat Khaing - Kalaw</div>
+            </div>
+        </div>
+        <div class="testimonial-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 25px -11px #d1e5efaa;padding:19px 20px;display:flex;gap:14px;align-items:center;">
+            <img src="{{ url_for('static', filename='images/Su Lai1.jpg') }}" alt="testimonial 1" style="height:58px;width:58px;object-fit:cover;border-radius:18px;border:3px solid #e0efff;box-shadow:0 1px 8px -3px #aad2e5;">
+            <div style="flex:1;">
+              <div style="font-weight:700;color:#263365;font-size:1rem;">"Booking packages with Aura was super easy and trustworthy."</div>
+              <div class="review-author" style="font-size:.96rem;margin-top:4px;"><i class="fa fa-user-circle"></i> Su Lai Nandar(1) - Yangon</div>
+            </div>
+        </div>
+        <div class="testimonial-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 25px -11px #d1e5efaa;padding:19px 20px;display:flex;gap:14px;align-items:center;">
+            <img src="{{ url_for('static', filename='images/Su Lai2.jpg') }}" alt="testimonial 1" style="height:58px;width:58px;object-fit:cover;border-radius:18px;border:3px solid #e0efff;box-shadow:0 1px 8px -3px #aad2e5;">
+            <div style="flex:1;">
+              <div style="font-weight:700;color:#263365;font-size:1rem;">"Booking package with Aura was super easy and trustworthy."</div>
+              <div class="review-author" style="font-size:.96rem;margin-top:4px;"><i class="fa fa-user-circle"></i> Su Lai Nandar(2) -Hpa An</div>
+            </div>
+        </div>
+        <div class="testimonial-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 25px -11px #dbeac5b0;padding:19px 20px;display:flex;gap:14px;align-items:center;">
+            <img src="{{ url_for('static', filename='images/t2.jpg') }}" alt="testimonial 2" style="height:58px;width:58px;object-fit:cover;border-radius:18px;border:3px solid #e2ffe7;box-shadow:0 1px 8px -3px #aad2e5;">
+            <div style="flex:1;">
+                <div style="font-weight:700;color:#253e1b;font-size:1rem;">"I found the best price for Mandalay trip, and support was quick."</div>
+                <div class="review-author" style="font-size:.96rem;margin-top:4px;"><i class="fa fa-user-circle"></i> Zin Thawdar Phyo - Mandalay</div>
+            </div>
+        </div>
+        <div class="testimonial-card" style="background:#fff;border-radius:18px;box-shadow:0 2px 25px -11px #f3bbaa77;padding:19px 20px;display:flex;gap:14px;align-items:center;">
+            <img src="{{ url_for('static', filename='images/t3.jpg') }}" alt="testimonial 3" style="height:58px;width:58px;object-fit:cover;border-radius:18px;border:3px solid #fff4e8;box-shadow:0 1px 8px -3px #e9c7ae;">
+            <div style="flex:1;">
+                <div style="font-weight:700;color:#253e1b;font-size:1rem;">"Booking confirmation came instantly, great!"</div>
+                <div class="review-author" style="font-size:.96rem;margin-top:4px;"><i class="fa fa-user-circle"></i> Su Myat Noe - Bagan</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Top Attractions -->
+<h2 class="section-heading" style="margin-top:32px;">Top attractions in Myanmar</h2>
+<div class="attractions-grid">
+    {% for att in attractions %}
+    <div class="attraction-card">
+        <img src="{{ url_for('static', filename='images/' + (att.img or 'default-attr.jpg')) }}" alt="{{ att.name }}" class="attraction-img">
+        <div style="padding:0 15px;">
+            <div class="attraction-card-title">{{ loop.index }}. {{ att.name }}</div>
+            <div>
+                <span class="attraction-rating-stars">
+                    {% for i in range(att.rating|default(5)|int) %}<span>&#9733;</span>{% endfor %}
+                </span>
+                <!-- <span style="font-size:1.01rem;font-weight:700;color:#384153;">{{ att.rating or '4.7' }}</span>
+                <span style="font-size:.98rem;color:#777;font-weight:500;">({{ att.reviews or '20123' }})</span> -->
+                <!-- <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" class="google-g" title="Google reviews"> -->
+            </div>
+            <div class="attraction-tags">
+                {% for tag in att.tags %}
+                    <div class="attraction-tag">{{ tag }}</div>
+                {% endfor %}
+            </div>
+            <div class="attraction-card-desc">{{ att.desc }}</div>
+            <!-- <div class="review-box"> -->
+                <!-- <span>{{ att.review_short or "Probably one of the best experiences I had…" }}</span> -->
+                <!-- <div class="review-author">{{ att.review_author or "User — Google review" }}</div>
+            </div> -->
+            <!-- <div class="destination-card-actions">
+                <button class="save-btn"><i class="fa fa-heart"></i> Save</button>
+            </div> -->
+            <div class="attractions-grid">
+    {% for att in top_attractions %}
+    <div class="attraction-card">
+        <img src="{{ url_for('static', filename='images/' + att.img) }}" alt="{{ att.name }}">
+        <h3>{{ att.name }}</h3>
+        
+        <p class="attraction-desc" style="color: #666; font-size: 14px; margin-top: 10px;">
+            {{ att.description }}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% endblock %}

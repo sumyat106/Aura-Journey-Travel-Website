@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Hotel စီမံခန့်ခွဲမှု</h2>
+<table style="width:100%; border-collapse: collapse;">
+    <thead style="background:#f4f8ff;">
+        <tr>
+            <th>ID</th>
+            <th>Hotel Name</th>
+            <th>မြို့</th>
+            <th>လိပ်စာ</th>
+            <th>ဈေးနှုန်း</th>
+            <th>Create Date</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for h in hotels %}
+        <tr style="border-bottom:1px solid #efefef;">
+            <td>{{ h.id }}</td>
+            <td>{{ h.name }}</td>
+            <td>{{ h.city_name }}</td>
+            <td>{{ h.address }}</td>
+            <td>{{ '{:,.0f}'.format(h.price) }} Ks</td>
+            <td>{{ h.created_at }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Confirm Booking - GIHUT Travels{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 50px auto; background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+    <h2 style="color: #2c3e50; margin-bottom: 10px;">Confirm Your Booking</h2>
+    <p style="color: #1abc9c; margin-bottom: 10px;">Package: <strong>{{ tour.name }}</strong></p>
+    
+    <input type="hidden" id="base_price" value="{{ tour.price }}">
+
+    <form method="POST">
+        <div style="margin-bottom: 15px;">
+            <label>Full Name</label>
+            <input type="text" name="full_name" value="{{ session.username }}" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+        </div>
+        
+        <div style="margin-bottom: 15px;">
+            <label>Travel Date</label>
+            <input type="date" name="travel_date" required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            <label>Number of Guests (Max: {{ tour.people_count }})</label>
+            <input type="number" name="guests" id="guests_input" 
+                   min="1" max="{{ tour.people_count }}" 
+                   value="1" oninput="updateTotalPrice()" 
+                   required style="width:100%; padding:12px; border:1px solid #ddd; border-radius:8px;">
+            <small style="color: #e74c3c;">* တစ်ကြိမ်လျှင် အများဆုံး {{ tour.people_count }} ယောက်အထိသာ လက်ခံပါသည်။</small>
+        </div>
+
+        <div style="margin-top: 25px; padding: 20px; background: #f9f9f9; border-left: 5px solid #1abc9c; border-radius: 8px;">
+            <p style="margin: 0; color: #7f8c8d; font-size: 14px;">Total Amount to Pay:</p>
+            <h3 style="margin: 5px 0 0 0; color: #2c3e50;">
+                <span id="total_price_display">{{ tour.price }}</span> MMK
+            </h3>
+        </div>
+
+        <button type="submit" style="width: 100%; margin-top: 25px; background: #1abc9c; color: white; padding: 15px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+            Confirm Booking
+        </button>
+    </form>
+</div>
+
+<script>
+function updateTotalPrice() {
+    // ၁။ Package ရဲ့ တစ်ယောက်စာ ဈေးနှုန်းကို ယူတယ် (Price ထဲမှာ , ပါရင် ဖယ်ထုတ်တယ်)
+    const priceText = document.getElementById('base_price').value;
+    const basePrice = parseFloat(priceText.replace(/,/g, ''));
+    
+    // ၂။ User ရိုက်လိုက်တဲ့ လူဦးရေကို ယူတယ်
+    const guestsInput = document.getElementById('guests_input');
+    const guests = parseInt(guestsInput.value);
+    const maxPeople = parseInt(guestsInput.max);
+
+    // ၃။ Max people ထက် ကျော်မကျော် စစ်တယ်
+    if (guests > maxPeople) {
+        alert("This tour package only allows a maximum of " + maxPeople + " guests.");
+        guestsInput.value = maxPeople;
+        updateTotalPrice(); // တန်ဖိုးကို max အတိုင်း ပြန်တွက်ဖို့
+        return;
+    }
+
+    // ၄။ ဈေးနှုန်းတွက်ချက်ပြီး Format ပြန်လုပ်တယ်
+    if (guests > 0) {
+        const total = basePrice * guests;
+        // toLocaleString() သုံးပြီး ကော်မာ (,) ပြန်ထည့်တယ်
+        document.getElementById('total_price_display').innerText = total.toLocaleString();
+    } else {
+        document.getElementById('total_price_display').innerText = "0";
+    }
+}
+</script>
+{% endblock %}

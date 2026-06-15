@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ city.name }} (မြို့သစ်၏အချက်အလက်များ)</h2>
+<p>{{ city.description }}</p>
+
+<h3>လည်ပတ်ရန် နေရာများ</h3>
+<div class="card-grid">
+  {% for attr in attractions %}
+    <div class="card">
+      {% if attr.image %}<img src="{{ url_for('static',filename='images/'+attr.image) }}" alt="{{ attr.name }}">{% endif %}
+      <h4>{{ attr.name }}</h4>
+      <p>{{ attr.description }}</p>
+    </div>
+  {% else %}
+    <p>မည်သည့် attraction မရှိပါ။</p>
+  {% endfor %}
+</div>
+
+<h3>Hotel များ</h3>
+<div class="card-grid">
+  {% for hotel in hotels %}
+    <div class="card">
+      {% if hotel.image %}<img src="{{ url_for('static',filename='images/'+hotel.image) }}" alt="{{ hotel.name }}">{% endif %}
+      <h4>{{ hotel.name }}</h4>
+      <p>လိပ်စာ: {{ hotel.address }}</p>
+      <b>ဈေးနှုန်း: {{ '{:,.0f}'.format(hotel.price) }} Ks</b>
+      {% if session.get("user") %}
+      <form method="POST" action="{{ url_for('book_hotel', hotel_id=hotel.id) }}" class="booking-form">
+        <div class="form-group">
+            <label>Check-in Date</label>
+            <input name="checkin" required class="datepicker">
+        </div>
+        <div class="form-group">
+            <label>Check-out Date</label>
+            <input name="checkout" required class="datepicker">
+        </div>
+        <button type="submit" class="btn">Booking</button>
+      </form>
+      {% else %}
+        <p>Booking လုပ်ရန် <a href="/login">Login</a> လုပ်ပါ</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <p>မည်သည့် ဟိုတယ်မတွေ့ပါ။</p>
+  {% endfor %}
+</div>
+
+<h3>ကားလိုင်းများ / Bus Services</h3>
+<div class="card-grid">
+  {% for bus in buses %}
+    <div class="card">
+      <b>{{ bus.bus_name }}</b>
+      <p>{{ bus.from_city }} ➡️ {{ bus.to_city }}</p>
+      <div>ထွက်ခွာချိန်: {{ bus.depart_time }} | ရောက်မည့်အချိန်: {{ bus.arrive_time }}</div>
+      <div>ဈေးနှုန်း: {{ '{:,.0f}'.format(bus.price) }} Ks</div>
+      {% if session.get("user") %}
+      <form method="POST" action="{{ url_for('book_bus', bus_id=bus.id) }}" class="booking-form">
+        <div class="form-group">
+            <label>Seat No</label>
+            <input name="seat_no" value="A1" required>
+        </div>
+        <button type="submit" class="btn">ကားလက်မှတ် Booking</button>
+      </form>
+      {% else %}
+        <p>Booking လုပ်ရန် <a href="/login">Login</a> လုပ်ပါ</p>
+      {% endif %}
+    </div>
+  {% else %}
+    <p>ကားလိုင်းမတွေ့ပါ။</p>
+  {% endfor %}
+</div>
+{% endblock %}
